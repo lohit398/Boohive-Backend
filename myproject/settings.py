@@ -133,6 +133,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'base.Customer'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = [
         'http://10.0.0.34:3000'
     ]
