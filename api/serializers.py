@@ -8,6 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "password":{"write_only":True}
         }
+    # overriding the create method
     def create(self,validated_data):
         pwd = validated_data.pop("password",None)
         ins = self.Meta.model(**validated_data)
