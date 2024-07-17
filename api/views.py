@@ -88,7 +88,7 @@ def availability_helper(request):
             curr+=datetime.timedelta(days=1)
     return availability
 
-@api_view(['GET'])
+@api_view(['POST'])
 def checkAvailability(request):
     if not validateJwt(request):
         raise AuthenticationFailed('Unauthenticated Request')
