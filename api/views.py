@@ -34,19 +34,15 @@ class LoginView(APIView):
         token = jwt.encode(data,'secret',algorithm='HS256')
         
         response = Response({
-            'message' : 'Login Successfull'
+            'token' : token
         })
-        response.set_cookie(key="token",value=token,httponly=True)
         return response
 
-class LogoutView(APIView):
-    def post(self,request):
-        response = Response()
-        response.delete_cookie('token')
-        response.data = {'message':"successfully logged out."}
-        return response
-
-def validateJwt(token):
+def validateJwt(request):
+    auth_header = request.META.get('HTTP_AUTHORIZATION')
+    if not auth_header or not auth_header.startswith('Bearer'):
+        raise AuthenticationFailed('Unauthenticated Request')
+    token = auth_header.split(" ")[1]
     if not token:
         raise AuthenticationFailed('Unauthenticated Request')
     try:
@@ -60,8 +56,7 @@ def validateJwt(token):
 
 @api_view(['GET'])
 def getBooks(request):
-    token = request.COOKIES.get("token")
-    if not validateJwt(token):
+    if not validateJwt(request):
         raise AuthenticationFailed('Unauthenticated Request')
     books = Book.objects.all()
     books_list = list(books.values())
@@ -95,8 +90,7 @@ def availability_helper(request):
 
 @api_view(['GET'])
 def checkAvailability(request):
-    token = request.COOKIES.get("token")
-    if not validateJwt(token):
+    if not validateJwt(request):
         raise AuthenticationFailed('Unauthenticated Request')
     availability = availability_helper(request)
     return JsonResponse(availability, safe=False)
